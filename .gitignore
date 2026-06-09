@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+server/node_modules/
+app/node_modules/
+
+# Build outputs
+app/dist/
+server/uploads/
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/
+
+# Wrangler
+.wrangler/
