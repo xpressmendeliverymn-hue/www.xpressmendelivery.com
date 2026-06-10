@@ -47,11 +47,13 @@ export default function Step8ReviewConfirm({ onValidationChange }: { onValidatio
           total,
         },
         affiliateCode: store.affiliateCode || undefined,
-        photos: store.photos.map((p) => ({
-          url: p.url,
-          aiDescription: p.aiDescription,
-          status: p.status,
-        })),
+        photos: store.photos
+          .filter((p) => p.serverUrl && p.status === 'complete')
+          .map((p) => ({
+            url: p.serverUrl,
+            aiDescription: p.aiDescription,
+            status: p.status,
+          })),
         roomSelection: store.roomSelection,
         schedule: store.schedule
           ? {

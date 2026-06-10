@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Plus, Trash2, CheckCircle, Package, Camera, ScanLine, Loader2, Sparkles, AlertCircle, X } from 'lucide-react';
+import { ArrowLeft, Trash2, CheckCircle, Package, ScanLine, Loader2, Sparkles, AlertCircle, X } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { ordersApi, catalogApi, storesApi, scheduleApi, ocrApi, uploadApi } from '@/services/api';
 import { toast } from 'sonner';

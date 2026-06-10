@@ -3,12 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { salespeopleApi } from '@/services/api';
-import { useAuthStore } from '@/store/authStore';
-
 export default function SalespersonSignup() {
   const { token } = useParams();
   const navigate = useNavigate();
-  const login = useAuthStore((s) => s.login);
   const [validating, setValidating] = useState(true);
   const [invite, setInvite] = useState<any>(null);
   const [error, setError] = useState('');

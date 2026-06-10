@@ -27,9 +27,10 @@ const PORT = process.env.PORT || 5000;
 
 const corsOrigin = process.env.NODE_ENV === 'production'
   ? [
-      process.env.FRONTEND_URL || 'https://xpressmendelivery.com',
+      process.env.FRONTEND_URL,
       'https://xpressmendelivery.com',
       'https://www.xpressmendelivery.com',
+      'https://xpressmendelivery.pages.dev',
     ].filter(Boolean)
   : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5173'];
 

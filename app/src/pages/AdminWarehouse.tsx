@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Package, CheckCircle, Truck, Clock, AlertCircle, Search } from 'lucide-react';
+import { Package, CheckCircle, Truck, Clock, Search } from 'lucide-react';
 import { ordersApi } from '@/services/api';
 import { toast } from 'sonner';
 
@@ -8,8 +8,6 @@ export default function AdminWarehouse() {
   const [orders, setOrders] = useState<any[]>([]);
   const [filter, setFilter] = useState<'all' | 'warehouse_new' | 'warehouse_picking' | 'warehouse_ready' | 'in_transit'>('all');
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(false);
-
   const fetchOrders = async () => {
     const data = await ordersApi.list();
     setOrders(data);
@@ -18,15 +16,12 @@ export default function AdminWarehouse() {
   useEffect(() => { fetchOrders(); }, []);
 
   const updateWarehouseStatus = async (id: string, status: string) => {
-    setLoading(true);
     try {
-      await ordersApi.updateStatus(id, { status, warehouse_status: status });
+      await ordersApi.updateStatus(id, status, `Updated to ${status}`);
       toast.success(`Status updated to ${status}`);
       await fetchOrders();
     } catch (err: any) {
       toast.error(err.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -76,7 +71,6 @@ export default function AdminWarehouse() {
           {filtered.length === 0 && <p className="text-[#64748B] text-center py-10">No orders found</p>}
           {filtered.map((order) => {
             const cfg = statusConfig[order.warehouse_status || 'warehouse_new'] || statusConfig.warehouse_new;
-            const Icon = cfg.icon;
             return (
               <motion.div key={order.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-[#0F1D32] border border-white/10 rounded-xl p-5">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

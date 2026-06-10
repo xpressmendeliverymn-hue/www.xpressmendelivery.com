@@ -6,6 +6,12 @@ import fs from 'fs';
 
 const router = express.Router();
 
+function getBaseUrl(req) {
+  const host = req.get('x-forwarded-host') || req.get('host');
+  const protocol = req.get('x-forwarded-proto') || req.protocol;
+  return `${protocol}://${host}`;
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = './uploads/';
@@ -32,7 +38,7 @@ const upload = multer({
 router.post('/image', upload.single('image'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
-  const url = `/uploads/${req.file.filename}`;
+  const url = `${getBaseUrl(req)}/uploads/${req.file.filename}`;
   res.json({ url, filename: req.file.filename });
 });
 
@@ -42,7 +48,7 @@ router.post('/images', upload.array('images', 10), (req, res) => {
     return res.status(400).json({ error: 'No files uploaded' });
   }
 
-  const urls = req.files.map(f => `/uploads/${f.filename}`);
+  const urls = req.files.map(f => `${getBaseUrl(req)}/uploads/${f.filename}`);
   res.json({ urls });
 });
 

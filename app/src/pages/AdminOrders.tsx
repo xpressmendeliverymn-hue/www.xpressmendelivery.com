@@ -198,9 +198,9 @@ export default function AdminOrders() {
                     <td className="p-4 text-white text-sm">${order.pricing?.total?.toFixed(2)}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        {order.formImages?.length > 0 && <Image size={14} className="text-blue-400" title="Form saved" />}
-                        {order.deliveryPhotos?.length > 0 && <CheckCircle size={14} className="text-green-400" title={`${order.deliveryPhotos.length} delivery photos`} />}
-                        {order.invoice_url && <FileText size={14} className="text-purple-400" title="Invoice ready" />}
+                        {order.formImages?.length > 0 && <span title="Form saved"><Image size={14} className="text-blue-400" /></span>}
+                        {order.deliveryPhotos?.length > 0 && <span title={`${order.deliveryPhotos.length} delivery photos`}><CheckCircle size={14} className="text-green-400" /></span>}
+                        {order.invoice_url && <span title="Invoice ready"><FileText size={14} className="text-purple-400" /></span>}
                       </div>
                     </td>
                     <td className="p-4">

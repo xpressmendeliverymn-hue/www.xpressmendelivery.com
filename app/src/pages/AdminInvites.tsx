@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Copy, Link, Clock, CheckCircle } from 'lucide-react';
+import { Plus, Trash2, Copy, Link, Clock } from 'lucide-react';
 import { salespeopleApi } from '@/services/api';
 import { toast } from 'sonner';
 

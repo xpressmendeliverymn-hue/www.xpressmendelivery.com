@@ -98,9 +98,12 @@ export const uploadApi = {
   image: async (file: File) => {
     const formData = new FormData();
     formData.append('image', file);
-    const res = await fetch(`/api/upload/image`, {
+    const headers: Record<string, string> = {};
+    const token = getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}/upload/image`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${getToken() || ''}` },
+      headers,
       body: formData,
     });
     const data = await res.json();
@@ -110,9 +113,12 @@ export const uploadApi = {
   images: async (files: File[]) => {
     const formData = new FormData();
     files.forEach(f => formData.append('images', f));
-    const res = await fetch(`/api/upload/images`, {
+    const headers: Record<string, string> = {};
+    const token = getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}/upload/images`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${getToken() || ''}` },
+      headers,
       body: formData,
     });
     const data = await res.json();
@@ -138,9 +144,12 @@ export const ocrApi = {
   extract: async (file: File) => {
     const formData = new FormData();
     formData.append('form', file);
-    const res = await fetch(`/api/ocr/extract`, {
+    const headers: Record<string, string> = {};
+    const token = getToken();
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    const res = await fetch(`${API_BASE}/ocr/extract`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${getToken() || ''}` },
+      headers,
       body: formData,
     });
     const data = await res.json();

@@ -4,8 +4,9 @@ export interface PhotoItem {
   id: string;
   file: File;
   url: string;
+  serverUrl?: string;
   aiDescription: string;
-  status: 'uploading' | 'analyzing' | 'complete';
+  status: 'uploading' | 'analyzing' | 'complete' | 'error';
 }
 
 export interface RoomSelection {
@@ -51,6 +52,7 @@ export interface BookingStore {
   addPhoto: (photo: PhotoItem) => void;
   removePhoto: (id: string) => void;
   updatePhotoStatus: (id: string, status: PhotoItem['status'], description?: string) => void;
+  updatePhotoUrl: (id: string, serverUrl: string) => void;
   setRoomSelection: (selection: RoomSelection | null) => void;
   setAdditionalDetails: (details: { homeType: string; parking?: string; accessNotes?: string; specialRequests?: string } | null) => void;
   setSchedule: (schedule: { date: Date; timeSlot: string } | null) => void;
@@ -116,6 +118,12 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
   updatePhotoStatus: (id, status, description) => set((s) => ({
     photos: s.photos.map(p =>
       p.id === id ? { ...p, status, aiDescription: description || p.aiDescription } : p
+    ),
+  })),
+
+  updatePhotoUrl: (id, serverUrl) => set((s) => ({
+    photos: s.photos.map(p =>
+      p.id === id ? { ...p, serverUrl } : p
     ),
   })),
 

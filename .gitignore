@@ -25,3 +25,6 @@ npm-debug.log*
 
 # Wrangler
 .wrangler/
+
+# Backup bundles
+*.bundle

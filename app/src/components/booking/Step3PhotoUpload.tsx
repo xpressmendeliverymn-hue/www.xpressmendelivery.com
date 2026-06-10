@@ -1,27 +1,17 @@
 import { useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useBookingStore } from '@/store/bookingStore';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const aiDescriptions = [
-  'Large beige sectional sofa, 3-piece, fabric upholstery',
-  'Wooden dining table with 6 upholstered chairs, oak finish',
-  'King-size bed frame with tufted headboard, platform style',
-  'Coffee table with glass top, metal frame, rectangular',
-  'Dresser with 6 drawers, dark walnut finish',
-  'Bookshelf unit, 5-tier, white laminate',
-  'TV stand/media console, 60-inch, espresso finish',
-  'Accent chair, wingback style, velvet fabric',
-  'Nightstand pair, 2-drawer, matching bedroom set',
-  'Console table, entryway, narrow profile',
-];
+import { uploadApi } from '@/services/api';
+import { toast } from 'sonner';
 
 export default function Step3PhotoUpload({ onValidationChange }: { onValidationChange: (v: boolean) => void }) {
   const photos = useBookingStore((s) => s.photos);
   const addPhoto = useBookingStore((s) => s.addPhoto);
   const removePhoto = useBookingStore((s) => s.removePhoto);
   const updatePhotoStatus = useBookingStore((s) => s.updatePhotoStatus);
+  const updatePhotoUrl = useBookingStore((s) => s.updatePhotoUrl);
 
   useEffect(() => {
     onValidationChange(true); // Always allow proceeding
@@ -30,20 +20,39 @@ export default function Step3PhotoUpload({ onValidationChange }: { onValidationC
   const onDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
       const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      const url = URL.createObjectURL(file);
-      addPhoto({ id, file, url, aiDescription: '', status: 'uploading' });
+      const previewUrl = URL.createObjectURL(file);
+      addPhoto({ id, file, url: previewUrl, serverUrl: '', aiDescription: '', status: 'uploading' });
 
-      // Simulate upload
-      setTimeout(() => {
-        updatePhotoStatus(id, 'analyzing');
-        // Simulate AI analysis
-        setTimeout(() => {
-          const desc = aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
-          updatePhotoStatus(id, 'complete', desc);
-        }, 1500);
-      }, 500);
+      // Upload to server
+      uploadApi.image(file)
+        .then((data) => {
+          updatePhotoStatus(id, 'analyzing');
+          updatePhotoUrl(id, data.url);
+          // Simulate AI analysis description
+          const descriptions = [
+            'Large beige sectional sofa, 3-piece, fabric upholstery',
+            'Wooden dining table with 6 upholstered chairs, oak finish',
+            'King-size bed frame with tufted headboard, platform style',
+            'Coffee table with glass top, metal frame, rectangular',
+            'Dresser with 6 drawers, dark walnut finish',
+            'Bookshelf unit, 5-tier, white laminate',
+            'TV stand/media console, 60-inch, espresso finish',
+            'Accent chair, wingback style, velvet fabric',
+            'Nightstand pair, 2-drawer, matching bedroom set',
+            'Console table, entryway, narrow profile',
+          ];
+          const desc = descriptions[Math.floor(Math.random() * descriptions.length)];
+          setTimeout(() => {
+            updatePhotoStatus(id, 'complete', desc);
+          }, 800);
+        })
+        .catch((err) => {
+          console.error('Photo upload failed:', err);
+          updatePhotoStatus(id, 'complete');
+          toast.error(`Photo upload failed: ${err.message}`);
+        });
     });
-  }, [addPhoto, updatePhotoStatus]);
+  }, [addPhoto, updatePhotoStatus, updatePhotoUrl]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -52,6 +61,7 @@ export default function Step3PhotoUpload({ onValidationChange }: { onValidationC
   });
 
   const completedPhotos = photos.filter((p) => p.status === 'complete');
+  const failedPhotos = photos.filter((p) => p.status === 'error');
 
   return (
     <div>
@@ -83,11 +93,19 @@ export default function Step3PhotoUpload({ onValidationChange }: { onValidationC
         </button>
       </div>
 
-      {/* AI Status Badge */}
+      {/* Status badges */}
       {completedPhotos.length > 0 && (
         <div className="mt-4 inline-flex items-center gap-2 bg-[rgba(16,185,129,0.1)] rounded-full px-4 py-2">
           <span className="text-body-s text-[#10B981] font-medium">
             ✓ AI analysis complete — {completedPhotos.length} item{completedPhotos.length > 1 ? 's' : ''} identified
+          </span>
+        </div>
+      )}
+      {failedPhotos.length > 0 && (
+        <div className="mt-2 inline-flex items-center gap-2 bg-red-500/10 rounded-full px-4 py-2">
+          <AlertCircle size={14} className="text-red-500" />
+          <span className="text-body-s text-red-500 font-medium">
+            {failedPhotos.length} photo{failedPhotos.length > 1 ? 's' : ''} failed to upload
           </span>
         </div>
       )}
