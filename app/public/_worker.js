@@ -4,7 +4,7 @@ export default {
     
     // Proxy API requests to the backend
     if (url.pathname.startsWith('/api/')) {
-      const backendUrl = env.BACKEND_URL || 'https://xpressmen-api.onrender.com';
+      const backendUrl = env.BACKEND_URL || 'https://xpressmen-api-production.up.railway.app';
       const target = backendUrl + url.pathname + url.search;
       
       // Clone request and strip CORS preflight complexity
